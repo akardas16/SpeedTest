@@ -1,8 +1,12 @@
 package com.akardas16.networkspeed
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
+import android.view.animation.AccelerateInterpolator
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -59,6 +63,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.akardas16.networkspeed.ui.theme.NetworkSpeedTheme
 import kotlinx.coroutines.delay
@@ -66,10 +72,46 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class MainActivity : ComponentActivity() {
+    private var removeSplashScreen: Boolean = false
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                removeSplashScreen.not()
+            }
+            setOnExitAnimationListener { splashScreen ->
+                // access to the splash screen and moving it down
+                ObjectAnimator.ofFloat(
+                    splashScreen.view,
+                    View.TRANSLATION_Y,
+                    // from top to down
+                    0f, splashScreen.view.height.toFloat()
+                ).apply {
+                    // deceleration interpolaror, duration
+                    interpolator = AccelerateInterpolator()
+                    duration = 350L
+                    // do not forget to remove the splash screen
+                    doOnEnd { splashScreen.remove() }
+                    start()
+                    enableEdgeToEdge(
+                        statusBarStyle = SystemBarStyle.light(
+                            android.graphics.Color.TRANSPARENT,
+                            android.graphics.Color.TRANSPARENT
+                        ),
+                        navigationBarStyle = SystemBarStyle.light(
+                            android.graphics.Color.TRANSPARENT,
+                            android.graphics.Color.TRANSPARENT
+                        )
+                    )
+
+                }
+            }
+
+
+        }
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
             NetworkSpeedTheme {
                 val lifecycleOwner = LocalLifecycleOwner.current
@@ -116,6 +158,9 @@ class MainActivity : ComponentActivity() {
                 lifecycleOwner.ListenLifecycle(onCreate = {
                     scope.launch {
                         viewModel.getServerList{resp, err ->
+                            resp?.let {
+                                removeSplashScreen = true
+                            }
 
                         }
 

@@ -2,4 +2,34 @@
 <resources>
 
     <style name="Theme.NetworkSpeed" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.VoyagerExamplesApp" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.ChatGPT" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
+        <item name="android:windowBackground">@color/splashColor</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/launcher_icon_round</item>
+        <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
+
+             animated drawable. One of these is required. -->
+        <item name="android:forceDarkAllowed" xmlns:tools="http://schemas.android.com/tools" tools:targetApi="q">false</item>
+
+    </style>
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background, animated icon, and animation duration. -->
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
+
+        <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
+             animated drawable. One of these is required. -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/launcher_icon_round</item>
+        <!-- Required for animated icons -->
+        <!-- <item name="windowSplashScreenAnimationDuration">5000</item> -->
+
+        <!-- Set the theme of the Activity that directly follows your splash screen. -->
+        <!-- Required -->
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="statusBarBackground">@color/transparent</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.ChatGPT</item>
+        <item name="android:forceDarkAllowed" xmlns:tools="http://schemas.android.com/tools" tools:targetApi="q">false</item>
+    </style>
 </resources>
